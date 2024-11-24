@@ -1,0 +1,38 @@
+// Add these models to the schema
+model Like {
+  id        String   @id @default(cuid())
+  userId    String
+  journalId String
+  createdAt DateTime @default(now())
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  journal Journal @relation(fields: [journalId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, journalId])
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  content   String   @db.Text
+  userId    String
+  journalId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  journal Journal @relation(fields: [journalId], references: [id], onDelete: Cascade)
+}
+
+// Update Journal model to include relations
+model Journal {
+  // ... existing fields ...
+  likes    Like[]
+  comments Comment[]
+}
+
+// Update User model to include relations
+model User {
+  // ... existing fields ...
+  likes    Like[]
+  comments Comment[]
+}
